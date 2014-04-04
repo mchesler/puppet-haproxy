@@ -1,0 +1,56 @@
+## File managed with puppet
+## Served by:          '<%= scope.lookupvar('::servername') %>'
+## Module:             '<%= scope.to_hash['module_name'] %>'
+## Template Source:    '<%= template_source %>'
+
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+  log         127.0.0.1 local0
+
+  chroot      /var/lib/haproxy
+  pidfile     /var/run/haproxy.pid
+  maxconn     65534
+  user        haproxy
+  group       haproxy
+  daemon
+
+  # turn on stats unix socket
+  stats socket /var/lib/haproxy/stats
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+  mode                    tcp
+  log                     global
+  option                  tcplog
+  option                  dontlognull
+  option                  http-server-close
+  option  forwardfor      except 127.0.0.0/8
+  option                  redispatch
+  retries                 3
+  timeout http-request    10s
+  timeout queue           1m
+  timeout connect         10s
+  timeout client          1m
+  timeout server          1m
+  timeout http-keep-alive 10s
+  timeout check           10s
+  maxconn                 4096
+
+listen stats :9090
+  balance
+  mode    http
+  stats   enable
+  stats   auth   admin:admin
+
+listen lb :<%= @listen_port %>
+  mode    tcp
+  option  tcplog
+  balance roundrobin
+<% @backends.each do |node| %>
+  server  <%= node['name'] %> <%= node['address'] %> check
+<%- end -%>
