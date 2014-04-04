@@ -3,9 +3,6 @@
 ## Module:             '<%= scope.to_hash['module_name'] %>'
 ## Template Source:    '<%= template_source %>'
 
-#---------------------------------------------------------------------
-# Global settings
-#---------------------------------------------------------------------
 global
   log         127.0.0.1 local0
 
@@ -19,14 +16,10 @@ global
   # turn on stats unix socket
   stats socket /var/lib/haproxy/stats
 
-#---------------------------------------------------------------------
-# common defaults that all the 'listen' and 'backend' sections will
-# use if not designated in their block
-#---------------------------------------------------------------------
 defaults
-  mode                    tcp
+  mode                    http
   log                     global
-  option                  tcplog
+  option                  httplog
   option                  dontlognull
   option                  http-server-close
   option  forwardfor      except 127.0.0.0/8
@@ -51,6 +44,6 @@ listen lb :<%= @listen_port %>
   mode    tcp
   option  tcplog
   balance roundrobin
-<% @backends.each do |node| %>
+<%- @backends.each do |node| -%>
   server  <%= node['name'] %> <%= node['address'] %> check
 <%- end -%>
