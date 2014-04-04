@@ -2,7 +2,7 @@ class haproxy::rabbitmq_cju inherits haproxy {
 
   $listen_port = '5672'
 
-  $backends => [
+  $backends = [
     {
       name    => 'rabbitmq_cju_1',
       address => 'rabbitmq-cju-1.idc.theladders.com:5672'
