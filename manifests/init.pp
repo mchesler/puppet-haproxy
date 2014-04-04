@@ -6,9 +6,9 @@ class haproxy {
   class { 'ssh': prod_allowed_groups => ['developers'] }
 
   if $::environment != 'prod' {
-    Class['haproxy::install'] ~> Class['haproxy::service']
+    Class['haproxy::install'] -> Class['haproxy::config'] ~> Class['haproxy::service']
   } else {
-    Class['haproxy::install'] -> Class['haproxy::service']
+    Class['haproxy::install'] -> Class['haproxy::config'] -> Class['haproxy::service']
   }
 
 }

@@ -40,10 +40,4 @@ class haproxy::install {
     "net.ipv4.tcp_moderate_rcvbuf": value => 1;
   }
 
-  file { 'haproxy_config':
-    path    => '/etc/haproxy/haproxy.cfg',
-    content => template('haproxy/haproxy.cfg.erb'),
-    mode    => '0644',
-  }
-
 }

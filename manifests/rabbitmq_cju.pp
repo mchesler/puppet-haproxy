@@ -44,4 +44,9 @@ class haproxy::rabbitmq_cju inherits haproxy {
       address => 'rabbitmq-cju-10.idc.theladders.com:5672'
     },
   ]
+
+  class { 'iptables': tcp_ports => ['9090', $listen_port] }
+
+  class { 'haproxy::config':
+  }
 }
